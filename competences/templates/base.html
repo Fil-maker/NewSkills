@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+{% block content %}
+    <div class="header">
+        <img src="{% static 'img/logo.png' %}">
+        <h1>NewSkills</h1>
+    </div>
+    <div class="content">
+        <form action="/" method="POST">
+            {% csrf_token %}
+            <div class="interface">
+                <div class="input-area">
+                    <label for="request" class="area-label">Ввод:</label>
+                    <textarea type="text" id="request" name="request"
+                              placeholder="Введите текст...">{% if form.request.value %}
+                        {{ form.request.value }} {% endif %}</textarea>
+                </div>
+                <div class="line"></div>
+                <div class="output-area">
+                    <label for="output" class="area-label">Результат ИИ:</label>
+                    <textarea id="output" placeholder="..." disabled>{{ output }}</textarea>
+                </div>
+            </div>
+            <div class="suggestions">
+                <div class="output-config-head">Возможные вводы</div>
+                <div class="config input-config">
+                    <input type="radio" name="in_type" id="id_in_type_1" value="P" checked>
+                    <label for="id_in_type_1">Профессии</label>
+                    <input type="radio" name="in_type" id="id_in_type_0" value="C">
+                    <label for="id_in_type_0">Компетенции</label>
+                    <input type="radio" name="in_type" id="id_in_type_2" value="S">
+                    <label for="id_in_type_2">Стандарты</label>
+                    <input type="radio" name="in_type" id="id_in_type_3" value="J">
+                    <label for="id_in_type_3">Конкретика</label>
+                </div>
+                <div class="output-config-head">Возможные запросы</div>
+                <div class="config output-config">
+                    <input type="radio" name="out_type" id="id_out_type_1" value="P" checked>
+                    <label for="id_out_type_1">Профессии</label>
+                    <input type="radio" name="out_type" id="id_out_type_0" value="C">
+                    <label for="id_out_type_0">Компетенции</label>
+                    <input type="radio" name="out_type" id="id_out_type_2" value="S">
+                    <label for="id_out_type_2">Стандарты</label>
+                    <input type="radio" name="out_type" id="id_out_type_3" value="J">
+                    <label for="id_out_type_3">Конкретика</label>
+                </div>
+                <input class="submit" type="submit" value="Отправить">
+            </div>
+        </form>
+    </div>
+{% endblock %}
+</body>
+</html>
