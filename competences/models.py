@@ -25,7 +25,7 @@ class Professions(models.Model):
 
 
 class Competence(models.Model):
-    name = models.CharField("Компетенция", max_length=200)
+    name = models.CharField("Конкретика", max_length=200)
     profession = models.ManyToManyField(Professions, verbose_name="Профессии")
 
     def __str__(self):
@@ -33,12 +33,12 @@ class Competence(models.Model):
 
     class Meta:
         ordering = ["id", "name"]
-        verbose_name = "Компетенция"
-        verbose_name_plural = "Компетенции"
+        verbose_name = "Конкретика"
+        verbose_name_plural = "Конкретики"
 
 
 class Standards(models.Model):
-    name = models.CharField("Должность с hh.ru", max_length=200)
+    name = models.CharField("Компетенция", max_length=200)
     profession = models.ManyToManyField(Professions, verbose_name="Профессии")
     competences = models.ManyToManyField(Competence, verbose_name="Компетенции")
 
@@ -46,12 +46,12 @@ class Standards(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Действие"
-        verbose_name_plural = "Действия"
+        verbose_name = "Компетенция"
+        verbose_name_plural = "Компетенции"
 
 
 class Jobs(models.Model):
-    name = models.CharField("Конкретика", max_length=200)
+    name = models.CharField("Вакансия", max_length=200)
     profession = models.ManyToManyField(Professions, verbose_name="Профессии")
     standards = models.ManyToManyField(Standards, verbose_name="Действия")
     competences = models.ManyToManyField(Competence, verbose_name="Компетенции")
@@ -60,8 +60,8 @@ class Jobs(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Конкретика"
-        verbose_name_plural = "Конкретики"
+        verbose_name = "Вакансия"
+        verbose_name_plural = "Ваканси"
 
 
 class International(models.Model):
