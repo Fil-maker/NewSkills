@@ -4,24 +4,27 @@ from .models import Direction, Professions, Competence, Standards, Jobs, Interna
 from django.shortcuts import get_object_or_404, Http404
 from django.core.exceptions import ObjectDoesNotExist
 
+
 def create_response(name, response_set):
-    return f"{name}:\n" + "*" + "\n\n*".join([i.name for i in response_set])
+    return [i.name[0].upper() + i.name[1:] for i in response_set]
+    # return f"{name}:\n" + "*" + "\n\n*".join([i.name for i in response_set])
 
 
 # Create your views here.
 def index(request):
     output = "Что-то пошло не так.\nПопробуйте Позже!"
+    is_good = False
     if request.method == "POST":
         form = Form(request.POST)
         if not form.is_valid():
-            return render(request, "base.html", context={"form": form})
+            return render(request, "base.html", context={"form": form, "output": output, "is_good": is_good})
         name = form.data.get("request", None)
         name = name.strip()
         in_type = form.data.get("in_type", None)
         out_type = form.data.get("out_type", None)
         try:
             if in_type == "P":
-                obj = Professions.objects.get(name=name)
+                obj = Professions.objects.filter(name__icontains=name.lower()).first()
                 if out_type == "P":
                     output = create_response("Профессии", obj.direction.professions_set.all())
                 elif out_type == "C":
@@ -34,7 +37,7 @@ def index(request):
                     output = create_response(
                         "Общепрофессиональные компетенции", obj.international_set.all())
             elif in_type == "C":
-                obj = Competence.objects.get(name=name)
+                obj = Competence.objects.filter(name__icontains=name.lower()).first()
                 if out_type == "P":
                     output = create_response("Профессии", obj.profession.all())
                 if out_type == "C":
@@ -46,7 +49,7 @@ def index(request):
                 if out_type == "I":
                     output = create_response("Общепрофессиональные компетенции", obj.international_set.all())
             elif in_type == "S":
-                obj = Standards.objects.get(name=name)
+                obj = Standards.objects.filter(name__icontains=name.lower()).first()
                 if out_type == "P":
                     output = create_response("Профессии", obj.profession.all())
                 if out_type == "C":
@@ -58,7 +61,7 @@ def index(request):
                 if out_type == "I":
                     output = create_response("Общепрофессиональные компетенции", obj.international_set.all())
             elif in_type == "J":
-                obj = Jobs.objects.get(name=name)
+                obj = Jobs.objects.filter(name__icontains=name.lower()).first()
                 if out_type == "P":
                     output = create_response("Профессии", obj.profession.all())
                 if out_type == "C":
@@ -70,7 +73,7 @@ def index(request):
                 if out_type == "I":
                     output = create_response("Общепрофессиональные компетенции", obj.international_set.all())
             elif in_type == "I":
-                obj = International.objects.get(name=name)
+                obj = International.objects.filter(name__icontains=name.lower()).first()
                 if out_type == "P":
                     output = create_response("Профессии", obj.profession.all())
                 if out_type == "C":
@@ -82,6 +85,7 @@ def index(request):
                 if out_type == "I":
                     output = create_response(
                         "Общепрофессиональные компетенции", obj.profession.first().international_set.all())
+            is_good = True
         except Http404 as e:
             print(e)
             output = "Не найдено!"
@@ -92,4 +96,4 @@ def index(request):
             print(e)
     else:
         form = Form()
-    return render(request, "base.html", context={"form": form, "output": output})
+    return render(request, "base.html", context={"form": form, "output": output, "is_good": is_good})

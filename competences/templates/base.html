@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>NewSkills</title>
     {% load static %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
 </head>
 <body>
 {% block content %}
@@ -26,10 +27,19 @@
                 <div class="line"></div>
                 <div class="output-area">
                     <label for="output" class="area-label">Результат ИИ:</label>
-                    <textarea id="output" placeholder="..." disabled>{{ output }}</textarea>
+                    <div class="output">
+                    {% if is_good == True %}
+                        {% for element in output %}
+                            <div class="answer">{{ element }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div>{{ output }}</div>
+                    {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="suggestions">
+                {{ form.errors }}
                 <div class="output-config-head">Возможные категории запросов</div>
                 <div class="config input-config">
                     <input type="radio" name="in_type" id="id_in_type_1" value="P" checked>
@@ -56,7 +66,6 @@
                     <input type="radio" name="out_type" id="id_out_type_4" value="I">
                     <label for="id_out_type_4">Общепрофессиональные компетенции</label>
                 </div>
-                {{ form.errors }}
                 <input class="submit" type="submit" value="Отправить">
             </div>
         </form>
@@ -64,15 +73,19 @@
 {% endblock %}
 </body>
 <script>
-    const in_t = '{{ form.in_type.value }}'
-    const out_t = '{{ form.out_type.value }}'
-    in_el = document.getElementsByName('in_type')
-    for (let i = 0;i < in_el.length; i++) {
+    function setInParam(name) {
+        in_el = document.getElementsByName('in_type')
+        for (let i = 0;i < in_el.length; i++) {
         let ch_el = in_el[i]
-        if (ch_el.value === in_t){
-            ch_el.checked = true;
+            if (ch_el.value === name){
+                ch_el.checked = true;
+            }
         }
     }
+    const in_t = '{{ form.in_type.value }}'
+    setInParam(in_t)
+
+    const out_t = '{{ form.out_type.value }}'
     out_el = document.getElementsByName('out_type')
     for (let i = 0;i < out_el.length; i++) {
         let ch_el = out_el[i]
@@ -80,5 +93,10 @@
             ch_el.checked = true;
         }
     }
+
+    $(".answer").click(function (){
+        $("#request").text($(this).text())
+        setInParam(out_t)
+    })
 </script>
 </html>
